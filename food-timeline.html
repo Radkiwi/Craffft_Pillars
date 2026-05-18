@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Zealand Food Systems — 670 Years of Innovation | Craffft</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5EDD8;
+      --gold: #C8A84B;
+      --bg: #0D180A;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    .tl-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 18px 40px 14px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(13,24,10,0.98) 60%, transparent);
+      gap: 24px;
+    }
+
+    .tl-brand {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.85;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tl-era-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(245,237,216,0.55);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════
+       TIMELINE SLIDER
+    ═══════════════════════════════════════════ */
+    .tl-slider {
+      position: fixed;
+      top: 48px;
+      left: 0; right: 0;
+      z-index: 150;
+      padding: 0 40px 0;
+      background: linear-gradient(to bottom, rgba(13,24,10,0.98) 60%, transparent);
+    }
+
+    .tl-slider-inner {
+      position: relative;
+      height: 62px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .tl-segs {
+      display: flex;
+      width: 100%;
+      gap: 2px;
+      position: relative;
+      align-items: flex-end;
+    }
+
+    .tl-seg {
+      flex: 1;
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 18px;
+      transition: all 0.2s;
+    }
+
+    .tl-seg-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--seg-col);
+      opacity: 0.25;
+      transition: height 0.25s ease, opacity 0.25s ease;
+    }
+
+    .tl-seg:hover .tl-seg-bar { opacity: 0.55; height: 4px; }
+    .tl-seg.active .tl-seg-bar { opacity: 1; height: 6px; }
+
+    .tl-seg-year {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: rgba(245,237,216,0.3);
+      white-space: nowrap;
+      transform: translateX(-50%);
+      transition: color 0.25s;
+      pointer-events: none;
+    }
+
+    .tl-seg:first-child .tl-seg-year { transform: translateX(0); }
+    .tl-seg.active .tl-seg-year { color: rgba(245,237,216,0.75); }
+
+    .tl-seg-tip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background: rgba(13,24,10,0.95);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--cream);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .tl-seg:hover .tl-seg-tip { opacity: 1; }
+
+    .tl-today {
+      position: absolute;
+      bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
+    .tl-today-flag {
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 3px;
+      padding: 2px 6px;
+      margin-bottom: 4px;
+    }
+
+    .tl-today-line {
+      width: 1px;
+      height: 20px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    }
+
+    .tl-slider-rule {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,168,75,0.15) 20%, rgba(200,168,75,0.15) 80%, transparent);
+      margin-top: 8px;
+    }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS BAR
+    ═══════════════════════════════════════════ */
+    .tl-progress {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      z-index: 300;
+      background: rgba(200,168,75,0.1);
+    }
+
+    .tl-progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--gold), #A8E898);
+      width: 0%;
+      transition: width 0.15s ease;
+    }
+
+    /* ═══════════════════════════════════════════
+       SCROLL TRACK
+    ═══════════════════════════════════════════ */
+    .tl-scroll {
+      display: flex;
+      height: 100vh;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .tl-scroll::-webkit-scrollbar { display: none; }
+
+    /* ═══════════════════════════════════════════
+       ERA PANELS
+    ═══════════════════════════════════════════ */
+    .era {
+      min-width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .era-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .era-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    /* Era backgrounds */
+    .era-1 .era-bg { background: radial-gradient(ellipse at 28% 62%, #1E3B14 0%, #132408 45%, #080F04 100%); }
+    .era-2 .era-bg { background: radial-gradient(ellipse at 65% 42%, #3B2A0A 0%, #261A05 45%, #140D02 100%); }
+    .era-3 .era-bg { background: radial-gradient(ellipse at 35% 55%, #0E2535 0%, #091828 45%, #040D14 100%); }
+    .era-4 .era-bg { background: radial-gradient(ellipse at 50% 50%, #2A1A12 0%, #1A100A 45%, #0E0805 100%); }
+    .era-5 .era-bg { background: radial-gradient(ellipse at 60% 38%, #0A2535 0%, #061828 45%, #030C14 100%); }
+    .era-6 .era-bg { background: radial-gradient(ellipse at 30% 60%, #0C2E1A 0%, #071F10 45%, #031008 100%); }
+    .era-7 .era-bg { background: radial-gradient(ellipse at 55% 42%, #280A35 0%, #1A0628 45%, #0D0314 100%); }
+    .era-8 .era-bg { background: radial-gradient(ellipse at 45% 32%, #0A2520 0%, #061A18 50%, #03100E 100%); }
+
+    /* Large decorative number */
+    .era-num {
+      position: absolute;
+      right: 4%;
+      bottom: 10%;
+      font-family: 'Playfair Display', serif;
+      font-size: min(22vw, 240px);
+      font-weight: 700;
+      color: var(--accent, var(--gold));
+      opacity: 0.04;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* Decorative SVG */
+    .era-flora {
+      position: absolute;
+      right: -2%;
+      top: 5%;
+      height: 90%;
+      width: 45%;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════
+       CONTENT
+    ═══════════════════════════════════════════ */
+    .era-content {
+      position: relative;
+      z-index: 10;
+      max-width: 860px;
+      width: 90%;
+      margin: 0 auto;
+      padding: 140px 0 70px;
+    }
+
+    .tl-anim {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .era.in-view .tl-anim { opacity: 1; transform: translateY(0); }
+
+    .tl-anim-d1 { transition-delay: 0.1s; }
+    .tl-anim-d2 { transition-delay: 0.22s; }
+    .tl-anim-d3 { transition-delay: 0.34s; }
+    .tl-anim-d4 { transition-delay: 0.44s; }
+    .tl-anim-d5 { transition-delay: 0.54s; }
+    .tl-anim-d6 { transition-delay: 0.64s; }
+    .tl-anim-d7 { transition-delay: 0.74s; }
+    .tl-anim-d8 { transition-delay: 0.84s; }
+
+    .era-maori {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 5.5vw, 74px);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--accent, var(--gold));
+      margin-bottom: 4px;
+    }
+
+    .era-year {
+      font-size: 0.65em;
+      font-weight: 400;
+      opacity: 0.55;
+      letter-spacing: 0.02em;
+    }
+
+    .era-english {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(13px, 1.6vw, 18px);
+      font-style: normal;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: rgba(245,237,216,0.5);
+      margin-bottom: 28px;
+    }
+
+    .era-rule {
+      width: 48px;
+      height: 1.5px;
+      background: var(--accent, var(--gold));
+      margin-bottom: 28px;
+      transform-origin: left;
+      opacity: 0;
+      transform: scaleX(0);
+      transition: opacity 0.5s ease, transform 0.6s ease;
+    }
+
+    .era.in-view .era-rule { opacity: 1; transform: scaleX(1); }
+
+    /* Events grid */
+    .era-events {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px 20px;
+      margin-bottom: 28px;
+    }
+
+    .ev {
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px;
+    }
+
+    .ev-icon { font-size: 18px; margin-bottom: 7px; }
+
+    .ev-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
+    .ev-desc {
+      font-size: 11.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245,237,216,0.6);
+    }
+
+    /* Material tags */
+    .era-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tag {
+      padding: 3px 11px;
+      border-radius: 100px;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid var(--accent, var(--gold));
+      color: var(--accent, var(--gold));
+      background: rgba(0,0,0,0.15);
+    }
+
+    /* ═══════════════════════════════════════════
+       ERA ACCENT COLOURS
+    ═══════════════════════════════════════════ */
+    .era-1 { --accent: #8BC34A; }   /* leaf green */
+    .era-2 { --accent: #F59E0B; }   /* harvest amber */
+    .era-3 { --accent: #6B93C7; }   /* pastoral sky */
+    .era-4 { --accent: #A0785A; }   /* weathered earth */
+    .era-5 { --accent: #0EA5E9; }   /* data blue */
+    .era-6 { --accent: #22C55E; }   /* regenerative green */
+    .era-7 { --accent: #C084FC; }   /* science purple */
+    .era-8 { --accent: #34D399; }   /* future mint */
+
+    /* ═══════════════════════════════════════════
+       FUTURE PATHS (Era 8)
+    ═══════════════════════════════════════════ */
+    .future-intro {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(245,237,216,0.65);
+      max-width: 500px;
+      margin-bottom: 22px;
+    }
+
+    .future-paths {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .path {
+      border-radius: 7px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.09);
+      transition: border-color 0.25s, background 0.25s;
+      cursor: default;
+    }
+
+    .path:hover { background: rgba(255,255,255,0.03); }
+
+    .path-a { border-color: rgba(34,197,94,0.3); }
+    .path-b { border-color: rgba(192,132,252,0.3); }
+    .path-c { border-color: rgba(200,168,75,0.3); }
+    .path-d { border-color: rgba(100,100,110,0.25); }
+
+    .path-a:hover { border-color: rgba(34,197,94,0.6); }
+    .path-b:hover { border-color: rgba(192,132,252,0.6); }
+    .path-c:hover { border-color: rgba(200,168,75,0.6); }
+    .path-d:hover { border-color: rgba(100,100,110,0.5); }
+
+    .path-condition {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .path-a .path-condition { color: #22C55E; }
+    .path-b .path-condition { color: #C084FC; }
+    .path-c .path-condition { color: #C8A84B; }
+    .path-d .path-condition { color: #8B9BAA; }
+
+    .path-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .path-desc {
+      font-size: 11px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245,237,216,0.55);
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .tl-footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 14px 40px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(to top, rgba(13,24,10,0.96) 55%, transparent);
+    }
+
+    .tl-hint {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      color: rgba(245,237,216,0.3);
+    }
+
+    .tl-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tl-counter {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: rgba(245,237,216,0.4);
+      min-width: 42px;
+      text-align: center;
+    }
+
+    .tl-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,168,75,0.3);
+      background: rgba(200,168,75,0.04);
+      color: rgba(200,168,75,0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .tl-btn:hover {
+      border-color: rgba(200,168,75,0.7);
+      background: rgba(200,168,75,0.1);
+      color: #C8A84B;
+    }
+
+    .tl-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .tl-header { padding: 12px 20px 10px; }
+      .tl-slider { top: 44px; padding: 0 20px; }
+      .tl-footer { padding: 10px 20px 16px; }
+      .era-content { padding: 130px 0 60px; }
+    }
+
+    @media (max-width: 640px) {
+      .tl-brand { display: none; }
+      .tl-seg-tip { display: none; }
+      .era-events { grid-template-columns: 1fr 1fr; }
+      .future-paths { grid-template-columns: 1fr; }
+      .tl-hint { display: none; }
+    }
+
+    @media (max-width: 420px) {
+      .era-events { grid-template-columns: 1fr; }
+      .tl-seg-year { font-size: 7px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="tl-progress"><div class="tl-progress-fill" id="progressFill"></div></div>
+
+<!-- Header -->
+<header class="tl-header">
+  <div class="tl-brand">Craffft · Food</div>
+  <div class="tl-era-title" id="tlEraTitle"></div>
+</header>
+
+<!-- Timeline slider -->
+<div class="tl-slider" id="tlSlider">
+  <div class="tl-slider-inner">
+    <div class="tl-segs" id="tlSegs"></div>
+  </div>
+  <div class="tl-slider-rule"></div>
+</div>
+
+<!-- Scroll track -->
+<div class="tl-scroll" id="tlScroll">
+
+  <!-- ━━━━ ERA 1: TE AO TAWHITO ━━━━ -->
+  <section class="era era-1" data-era="0">
+    <div class="era-bg"></div>
+    <div class="era-num">1</div>
+
+    <!-- Kūmara leaf SVG silhouette -->
+    <svg class="era-flora" viewBox="0 0 300 580" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M150 560 C150 560 60 380 40 220 C20 100 80 40 150 30" stroke="white" stroke-width="3" fill="none"/>
+      <path d="M150 560 C150 560 240 380 260 220 C280 100 220 40 150 30" stroke="white" stroke-width="3" fill="none"/>
+      <ellipse cx="100" cy="200" rx="55" ry="30" stroke="white" stroke-width="1.5" fill="none" transform="rotate(-25 100 200)"/>
+      <ellipse cx="200" cy="180" rx="55" ry="28" stroke="white" stroke-width="1.5" fill="none" transform="rotate(20 200 180)"/>
+      <ellipse cx="80" cy="330" rx="48" ry="24" stroke="white" stroke-width="1.5" fill="none" transform="rotate(-15 80 330)"/>
+      <ellipse cx="210" cy="310" rx="48" ry="24" stroke="white" stroke-width="1.5" fill="none" transform="rotate(18 210 310)"/>
+      <path d="M100 200 C115 210 135 215 150 210" stroke="white" stroke-width="0.8" fill="none"/>
+      <path d="M200 180 C185 192 168 196 150 190" stroke="white" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Ancient Foundation <span class="era-year">(c.1350)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Te Ao Tawhito</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">🌿</div>
+          <div class="ev-title">Kaitiakitanga as Food Philosophy</div>
+          <div class="ev-desc">Māori establish food systems governed by kaitiakitanga — intergenerational environmental guardianship. Tau utu utu (reciprocity) ensures the land gives back what is taken with care.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">🌱</div>
+          <div class="ev-title">Kūmara Cultivation</div>
+          <div class="ev-desc">Polynesian ancestors adapt Pacific horticulture to a cooler climate. Kūmara (sweet potato) becomes the cornerstone crop, cultivated in sophisticated mounds and managed garden systems.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">🌙</div>
+          <div class="ev-title">Maramataka</div>
+          <div class="ev-desc">The Māori lunar calendar governs planting, harvesting, and fishing cycles — a precise ecological science refined over centuries to align human food systems with seasonal rhythms.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">🐟</div>
+          <div class="ev-title">Kaimoana</div>
+          <div class="ev-desc">Sophisticated fishing, eel (tuna) harvesting, and bird trapping provide abundant protein. Rahui (conservation restrictions) protect breeding populations — the world's earliest fisheries management.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">Kūmara</span>
+        <span class="tag">Kaimoana</span>
+        <span class="tag">Tuna (Eel)</span>
+        <span class="tag">Kaitiakitanga</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 2: TE HURIHANGA ━━━━ -->
+  <section class="era era-2" data-era="1">
+    <div class="era-bg"></div>
+    <div class="era-num">2</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Great Transformation <span class="era-year">(1882)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Te Hurihanga</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">🚢</div>
+          <div class="ev-title">The SS Dunedin</div>
+          <div class="ev-desc">1882: The first successful refrigerated shipment of frozen meat and dairy sails from New Zealand to the United Kingdom. A single voyage rewrites the nation's economic destiny.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">🪓</div>
+          <div class="ev-title">Bush Cleared for Pasture</div>
+          <div class="ev-desc">Refrigeration triggers mass clearing of native bush to create pastoral grazing systems. New Zealand is rapidly transformed from an isolated wool producer into the protein supplier for the British Empire.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">🐄</div>
+          <div class="ev-title">Dairy & Meat Exports</div>
+          <div class="ev-desc">Sheep, cattle, and dairy farming expand at extraordinary speed. Within decades, pastoral agriculture defines the New Zealand landscape, economy, and national identity.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">❄️</div>
+          <div class="ev-title">Cold Chain Revolution</div>
+          <div class="ev-desc">Refrigeration technology unlocks global markets previously inaccessible to NZ's geographic isolation — a technological breakthrough that would shape land use for over a century.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">Frozen Meat</span>
+        <span class="tag">Butter & Cheese</span>
+        <span class="tag">Wool</span>
+        <span class="tag">Refrigeration</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 3: TE ĀHURU ━━━━ -->
+  <section class="era era-3" data-era="2">
+    <div class="era-bg"></div>
+    <div class="era-num">3</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Protected Era <span class="era-year">(1930)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Te Āhuru</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">🏛️</div>
+          <div class="ev-title">Subsidised Production</div>
+          <div class="ev-desc">Government price supports, tax incentives, and guaranteed export markets insulate farmers from global market forces. High-volume, low-margin production becomes the unchallenged model.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">🐑</div>
+          <div class="ev-title">Pastoral Identity Entrenched</div>
+          <div class="ev-desc">Decades of protection lock New Zealand's agricultural identity as a pastoral nation. Sheep and beef farming expand across the country — over 70 million sheep at peak population.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">🥛</div>
+          <div class="ev-title">Dairy Dominance</div>
+          <div class="ev-desc">Fonterra's predecessors consolidate the dairy sector. New Zealand becomes one of the world's largest dairy exporters — a position built entirely on abundant land, temperate climate, and state protection.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">⚠️</div>
+          <div class="ev-title">Hidden Fragility</div>
+          <div class="ev-desc">Beneath the prosperity, deep structural fragility develops. The sector grows dependent on subsidies and a single commodity model, leaving it dangerously exposed when protections are eventually removed.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">Lamb & Beef</span>
+        <span class="tag">Dairy Exports</span>
+        <span class="tag">Wool</span>
+        <span class="tag">Government Subsidies</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 4: OHORERE ━━━━ -->
+  <section class="era era-4" data-era="3">
+    <div class="era-bg"></div>
+    <div class="era-num">4</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Great Shock <span class="era-year">(1984)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ohorere</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">⚡</div>
+          <div class="ev-title">Rogernomics</div>
+          <div class="ev-desc">1984: Facing acute fiscal crisis, the government eliminates virtually all agricultural subsidies, price supports, and tax incentives almost overnight. The most radical agricultural deregulation in any OECD nation.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">📉</div>
+          <div class="ev-title">Rural Trauma</div>
+          <div class="ev-desc">Farm values collapse. Rural communities face systemic economic shock. A generation of farmers loses confidence in agriculture as a career — the wounds take a decade to heal.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">💪</div>
+          <div class="ev-title">Forced Efficiency</div>
+          <div class="ev-desc">Survival demands radical adaptation. Farmers pivot to operational efficiency, cost control, and market-driven innovation. A deep culture of resilience and self-reliance is forged in the hardship.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">🌍</div>
+          <div class="ev-title">Market Orientation</div>
+          <div class="ev-desc">Without subsidies, NZ agriculture must compete globally on merit. This forced market discipline becomes the foundation of the sector's long-term competitiveness — and its future innovation culture.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">Deregulation</span>
+        <span class="tag">Market Forces</span>
+        <span class="tag">Rural Restructuring</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 5: MĀHIRERE ━━━━ -->
+  <section class="era era-5" data-era="4">
+    <div class="era-bg"></div>
+    <div class="era-num">5</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Precision Era <span class="era-year">(1995)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Māhirere</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">📡</div>
+          <div class="ev-title">GPS & Remote Sensing</div>
+          <div class="ev-desc">Early 2000s: Data-driven decision-making enters traditional farming. GPS-guided machinery, remote sensing, and variable-rate nutrient application shift the focus from volume to resource optimisation.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">🤝</div>
+          <div class="ev-title">PAANZ & AgriTech NZ</div>
+          <div class="ev-desc">2012–2019: The Precision Agriculture Association of NZ (PAANZ) formalises data-driven farming. 2018: AgriTech New Zealand unifies the sector's fragmented efforts into a cohesive export strategy.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">💧</div>
+          <div class="ev-title">Environmental Reckoning</div>
+          <div class="ev-desc">Nitrate leaching from intensive dairy runoff triggers a national freshwater crisis. Precision agriculture attempts to curb damage — but mounts pressure for a deeper systemic shift toward restoration.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">🌐</div>
+          <div class="ev-title">Kiwifruit & Horticulture</div>
+          <div class="ev-desc">Zespri grows New Zealand kiwifruit into a premium global brand — proof that high-value, tightly managed horticulture can generate far greater returns per hectare than bulk pastoral commodities.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">GPS Farming</span>
+        <span class="tag">Data Analytics</span>
+        <span class="tag">Kiwifruit</span>
+        <span class="tag">AgriTech NZ</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 6: ARA HOU ━━━━ -->
+  <section class="era era-6" data-era="5">
+    <div class="era-bg"></div>
+    <div class="era-num">6</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">Regenerative Pathways <span class="era-year">(2020)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ara Hou</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">🌍</div>
+          <div class="ev-title">Regenerative Agriculture</div>
+          <div class="ev-desc">The sector pivots from damage mitigation to active ecological restoration. Multi-species pasture swards, soil microbiology management, and rotational grazing systems replace synthetic-input dependency.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">♨️</div>
+          <div class="ev-title">Miraka: Geothermal Dairy</div>
+          <div class="ev-desc">The Māori-owned Miraka dairy plant becomes the world's first to run on geothermal energy — achieving manufacturing emissions 92% lower than coal-fired equivalents, guided by kaitiakitanga.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">🐄📱</div>
+          <div class="ev-title">Halter: Virtual Fencing</div>
+          <div class="ev-desc">Halter's AI-driven smart collars enable virtual fencing via GPS and sound cues — eliminating physical fences, enabling precision rotational grazing, and automating waterway exclusion for 1M+ cattle.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">🧫</div>
+          <div class="ev-title">Alternative Proteins Emerge</div>
+          <div class="ev-desc">Daisy Lab uses precision fermentation to produce dairy proteins from yeast. Miruku grows mammalian milk proteins directly in oil seed crops — bypassing the cow entirely for the first time.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">Regenerative Ag</span>
+        <span class="tag">Geothermal Dairy</span>
+        <span class="tag">Virtual Fencing</span>
+        <span class="tag">Precision Fermentation</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 7: PŪTAIAO HOU ━━━━ -->
+  <section class="era era-7" data-era="6">
+    <div class="era-bg"></div>
+    <div class="era-num">7</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The New Science <span class="era-year">(2025)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Pūtaiao Hou</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <div class="era-events">
+        <div class="ev tl-anim tl-anim-d4">
+          <div class="ev-icon">🏛️</div>
+          <div class="ev-title">NZIBS Mega-Merger</div>
+          <div class="ev-desc">July 2025: AgResearch, Manaaki Whenua, Plant &amp; Food Research, and Scion merge into the New Zealand Institute for Bioeconomy Science (NZIBS) — eliminating silos between animal science, plant genetics, and environmental stewardship.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d5">
+          <div class="ev-icon">🧬</div>
+          <div class="ev-title">Gene Technology Bill</div>
+          <div class="ev-desc">15,000+ public submissions. The HSNO Act's effective GMO ban is dismantled. A risk-based regulatory framework — modelled on Australia's — unlocks domestic commercialisation of CRISPR crops, cellular agriculture, and low-methane grasses.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d6">
+          <div class="ev-icon">🌊</div>
+          <div class="ev-title">Seaweed as Climate Lever</div>
+          <div class="ev-desc">Cawthron's Ngā Punga o te Moana programme scales laboratory cultivation of Asparagopsis seaweed — proven to reduce livestock methane by up to 90%. Open ocean aquaculture targets $3B annual revenue by 2035.</div>
+        </div>
+        <div class="ev tl-anim tl-anim-d7">
+          <div class="ev-icon">🤖</div>
+          <div class="ev-title">Robotics Exits &amp; US$2B Valuations</div>
+          <div class="ev-desc">April 2026: Robotics Plus acquired by Yamaha Motor Co. Halter closes a NZD $220M Series E round at a US$2B valuation — the largest AgTech raise in NZ history — and deploys across the UK, Ireland, and South America.</div>
+        </div>
+      </div>
+
+      <div class="era-tags tl-anim tl-anim-d8">
+        <span class="tag">NZIBS</span>
+        <span class="tag">Gene Technology</span>
+        <span class="tag">Asparagopsis</span>
+        <span class="tag">AgTech Robotics</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━━━ ERA 8: NGĀ ARA ━━━━ -->
+  <section class="era era-8" data-era="7">
+    <div class="era-bg"></div>
+    <div class="era-num">8</div>
+
+    <div class="era-content">
+      <h2 class="era-maori tl-anim tl-anim-d2">The Pathways <span class="era-year">(2026 →)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ngā Ara</p>
+      <div class="era-rule tl-anim-d3"></div>
+
+      <p class="future-intro tl-anim tl-anim-d4">
+        New Zealand's food system stands at its most significant inflection point since the SS Dunedin sailed in 1882.
+        The decisions made today will determine which future we enter.
+      </p>
+
+      <div class="future-paths">
+        <div class="path path-a tl-anim tl-anim-d5">
+          <div class="path-condition">If Gene Tech Unlocks</div>
+          <div class="path-name">The Molecular Farming Revolution</div>
+          <div class="path-desc">CRISPR crops, precision fermentation, and molecular farming scale commercially. Miruku, Daisy Lab, and Opo Bio attract foreign investment. NZ exports protein and biological IP — not just raw volume.</div>
+        </div>
+        <div class="path path-b tl-anim tl-anim-d6">
+          <div class="path-condition">If Regenerative Leads</div>
+          <div class="path-name">Premium Markets & Ecological Recovery</div>
+          <div class="path-desc">Science-validated regenerative practices restore soil health and freshwater quality. Kaitiakitanga-aligned farming commands premium export pricing. NZ becomes the world's most trusted provenance.</div>
+        </div>
+        <div class="path path-c tl-anim tl-anim-d7">
+          <div class="path-condition">If Workforce Is Built</div>
+          <div class="path-name">Closing the Retirement Cliff</div>
+          <div class="path-desc">360,000-strong sector faces mass knowledge exodus. Investment in biological and digital agronomy education retains institutional expertise, feeds the NZIBS pipeline, and builds the human capital the bio-economy demands.</div>
+        </div>
+        <div class="path path-d tl-anim tl-anim-d8">
+          <div class="path-condition">Risk: If We Stall</div>
+          <div class="path-name">Trade Tariffs & Brain Drain</div>
+          <div class="path-desc">If climate technologies fail to scale and the workforce gap widens, international markets apply tariffs for environmental non-compliance. The window for NZ's bio-economy advantage closes — and does not reopen.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end .tl-scroll -->
+
+<!-- Footer -->
+<footer class="tl-footer">
+  <span class="tl-hint">← → Arrow keys · Scroll · Swipe</span>
+  <div class="tl-controls">
+    <button class="tl-btn" id="btnPrev" aria-label="Previous era">←</button>
+    <span class="tl-counter" id="eraCounter">1 / 8</span>
+    <button class="tl-btn" id="btnNext" aria-label="Next era">→</button>
+  </div>
+</footer>
+
+<script>
+  (() => {
+    const ERAS = [
+      { year: 'c.1350', label: 'The Ancient Foundation', color: '#8BC34A' },
+      { year: '1882',   label: 'The Great Transformation', color: '#F59E0B' },
+      { year: '1930',   label: 'The Protected Era',       color: '#6B93C7' },
+      { year: '1984',   label: 'The Great Shock',         color: '#A0785A' },
+      { year: '1995',   label: 'The Precision Era',       color: '#0EA5E9' },
+      { year: '2020',   label: 'Regenerative Pathways',   color: '#22C55E' },
+      { year: '2025',   label: 'The New Science',         color: '#C084FC' },
+      { year: '2026 →', label: 'The Pathways',            color: '#34D399' },
+    ];
+
+    const TODAY_ERA_IDX = 7;  // TODAY marker at the start of era 8 (2026)
+    const DEFAULT_ERA   = 6;  // Land on "The New Science (2025)"
+
+    const scroll   = document.getElementById('tlScroll');
+    const segsEl   = document.getElementById('tlSegs');
+    const sliderEl = document.getElementById('tlSlider');
+    const fill     = document.getElementById('progressFill');
+    const counter  = document.getElementById('eraCounter');
+    const eraTitle = document.getElementById('tlEraTitle');
+    const btnPrev  = document.getElementById('btnPrev');
+    const btnNext  = document.getElementById('btnNext');
+    const panels   = Array.from(document.querySelectorAll('.era'));
+    const N        = panels.length;
+    let current    = DEFAULT_ERA;
+
+    // ── Build slider segments ──────────────────────────────
+    ERAS.forEach((e, i) => {
+      const seg = document.createElement('div');
+      seg.className = 'tl-seg' + (i === DEFAULT_ERA ? ' active' : '');
+      seg.style.setProperty('--seg-col', e.color);
+      seg.setAttribute('aria-label', `Go to era: ${e.label}`);
+      seg.innerHTML = `
+        <div class="tl-seg-tip">${e.label}</div>
+        <div class="tl-seg-bar"></div>
+        <div class="tl-seg-year">${e.year}</div>`;
+      seg.addEventListener('click', () => scrollToEra(i));
+      segsEl.appendChild(seg);
+    });
+
+    const segEls = Array.from(segsEl.querySelectorAll('.tl-seg'));
+
+    // ── Place TODAY marker ─────────────────────────────────
+    function placeTodayMarker() {
+      const existing = sliderEl.querySelector('.tl-today');
+      if (existing) existing.remove();
+
+      const inner  = sliderEl.querySelector('.tl-slider-inner');
+      const segW   = segsEl.offsetWidth / N;
+      const leftPx = TODAY_ERA_IDX * segW;
+
+      const marker = document.createElement('div');
+      marker.className = 'tl-today';
+      marker.style.left = leftPx + 'px';
+      marker.innerHTML = `
+        <div class="tl-today-flag">TODAY</div>
+        <div class="tl-today-line"></div>`;
+      inner.appendChild(marker);
+    }
+
+    // ── Intersection Observer ──────────────────────────────
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
+      });
+    }, { threshold: 0.45 });
+
+    panels.forEach(p => io.observe(p));
+
+    // ── Scroll tracking ────────────────────────────────────
+    function onScroll() {
+      const scrollLeft = scroll.scrollLeft;
+      const maxScroll  = scroll.scrollWidth - scroll.clientWidth;
+      const progress   = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
+      fill.style.width = progress + '%';
+
+      const idx     = Math.round(scrollLeft / scroll.clientWidth);
+      const clamped = Math.max(0, Math.min(N - 1, idx));
+      if (clamped !== current) {
+        current = clamped;
+        updateUI();
+      }
+    }
+
+    scroll.addEventListener('scroll', onScroll, { passive: true });
+
+    function updateUI() {
+      segEls.forEach((s, i) => s.classList.toggle('active', i === current));
+      counter.textContent  = `${current + 1} / ${N}`;
+      eraTitle.textContent = ERAS[current].label;
+      btnPrev.disabled     = current === 0;
+      btnNext.disabled     = current === N - 1;
+    }
+
+    // ── Scroll to era ──────────────────────────────────────
+    function scrollToEra(idx) {
+      const target = Math.max(0, Math.min(N - 1, idx));
+      scroll.scrollTo({ left: target * scroll.clientWidth, behavior: 'smooth' });
+    }
+
+    // ── Button controls ────────────────────────────────────
+    btnPrev.addEventListener('click', () => scrollToEra(current - 1));
+    btnNext.addEventListener('click', () => scrollToEra(current + 1));
+
+    // ── Keyboard navigation ────────────────────────────────
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); scrollToEra(current + 1); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); scrollToEra(current - 1); }
+      if (e.key === 'Home') { e.preventDefault(); scrollToEra(0); }
+      if (e.key === 'End')  { e.preventDefault(); scrollToEra(N - 1); }
+    });
+
+    // ── Resize ─────────────────────────────────────────────
+    window.addEventListener('resize', placeTodayMarker);
+
+    // ── Init ───────────────────────────────────────────────
+    updateUI();
+    scroll.scrollLeft = DEFAULT_ERA * scroll.clientWidth;
+    requestAnimationFrame(() => {
+      placeTodayMarker();
+      panels[DEFAULT_ERA].classList.add('in-view');
+    });
+  })();
+</script>
+</body>
+</html>
