@@ -373,6 +373,27 @@
       color: rgba(245,237,216,0.6);
     }
 
+    .ev-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      opacity: 0.72;
+      transition: opacity 0.2s;
+    }
+    .ev-link:hover { opacity: 1; }
+
+    .ev.has-link {
+      border-color: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.045);
+    }
+
     /* Material tags */
     .era-tags {
       display: flex;
@@ -715,10 +736,11 @@
           <div class="ev-title">Dairy & Meat Exports</div>
           <div class="ev-desc">Sheep, cattle, and dairy farming expand at extraordinary speed. Within decades, pastoral agriculture defines the New Zealand landscape, economy, and national identity.</div>
         </div>
-        <div class="ev tl-anim tl-anim-d7">
+        <div class="ev has-link tl-anim tl-anim-d7">
           <div class="ev-icon">❄️</div>
           <div class="ev-title">Cold Chain Revolution</div>
           <div class="ev-desc">Refrigeration technology unlocks global markets previously inaccessible to NZ's geographic isolation — a technological breakthrough that would shape land use for over a century.</div>
+          <a class="ev-link" href="/food-the-refrigeration-revolution">Deep Dive →</a>
         </div>
       </div>
 
