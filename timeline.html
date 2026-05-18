@@ -48,59 +48,138 @@
       flex-shrink: 0;
     }
 
-    /* Nav dots */
-    .tl-nav {
-      display: flex;
-      align-items: flex-end;
-      flex: 1;
-      justify-content: center;
+    /* Active era title in header */
+    .tl-era-title {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: rgba(245,237,216,0.55);
+      text-align: right;
+      white-space: nowrap;
     }
 
-    .tl-nav-item {
+    /* ═══════════════════════════════════════════
+       TIMELINE SLIDER
+    ═══════════════════════════════════════════ */
+    .tl-slider {
+      position: fixed;
+      top: 48px;
+      left: 0; right: 0;
+      z-index: 150;
+      padding: 0 40px 0;
+      background: linear-gradient(to bottom, rgba(12,26,16,0.98) 60%, transparent);
+    }
+
+    .tl-slider-inner {
+      position: relative;
+      height: 62px;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    /* Era segments */
+    .tl-segs {
+      display: flex;
+      width: 100%;
+      gap: 2px;
+      position: relative;
+      align-items: flex-end;
+    }
+
+    .tl-seg {
+      flex: 1;
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 18px; /* room for year label */
+      transition: all 0.2s;
+    }
+
+    .tl-seg-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--seg-col);
+      opacity: 0.25;
+      transition: height 0.25s ease, opacity 0.25s ease;
+    }
+
+    .tl-seg:hover .tl-seg-bar { opacity: 0.55; height: 4px; }
+    .tl-seg.active .tl-seg-bar { opacity: 1; height: 6px; }
+
+    .tl-seg-year {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: rgba(245,237,216,0.3);
+      white-space: nowrap;
+      transform: translateX(-50%);
+      transition: color 0.25s;
+      pointer-events: none;
+    }
+
+    .tl-seg:first-child .tl-seg-year { transform: translateX(0); }
+    .tl-seg.active .tl-seg-year { color: rgba(245,237,216,0.75); }
+
+    /* Era name tooltip on hover */
+    .tl-seg-tip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background: rgba(12,26,16,0.95);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--cream);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .tl-seg:hover .tl-seg-tip { opacity: 1; }
+
+    /* Today marker */
+    .tl-today {
+      position: absolute;
+      bottom: 18px; /* align with bar top */
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: pointer;
-      padding: 0 4px;
-      gap: 5px;
-      opacity: 0.5;
-      transition: opacity 0.3s;
+      pointer-events: none;
+      transform: translateX(-50%);
+      z-index: 20;
     }
 
-    .tl-nav-item:hover { opacity: 0.8; }
-    .tl-nav-item.active { opacity: 1; }
-
-    .tl-nav-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(200,168,75,0.3);
-      border: 1px solid rgba(200,168,75,0.5);
-      transition: all 0.3s;
-    }
-
-    .tl-nav-item.active .tl-nav-dot {
-      background: var(--gold);
-      box-shadow: 0 0 10px rgba(200,168,75,0.7);
-      transform: scale(1.4);
-    }
-
-    .tl-nav-label {
-      font-size: 8.5px;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: rgba(245,237,216,0.5);
-      text-align: center;
+    .tl-today-flag {
+      font-size: 7.5px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.9);
       white-space: nowrap;
-      transition: color 0.3s;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 3px;
+      padding: 2px 6px;
+      margin-bottom: 4px;
     }
 
-    .tl-nav-item.active .tl-nav-label { color: var(--gold); }
+    .tl-today-line {
+      width: 1px;
+      height: 20px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+    }
 
-    .tl-nav-connector {
-      width: 32px; height: 1px;
-      background: rgba(200,168,75,0.15);
-      margin-bottom: 8px;
-      flex-shrink: 0;
+    /* Slider bottom border */
+    .tl-slider-rule {
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(200,168,75,0.15) 20%, rgba(200,168,75,0.15) 80%, transparent);
+      margin-top: 8px;
     }
 
     /* Progress bar */
@@ -207,7 +286,7 @@
       max-width: 860px;
       width: 90%;
       margin: 0 auto;
-      padding: 90px 0 70px;
+      padding: 140px 0 70px;
     }
 
     /* Animated entrance — all children start hidden */
@@ -247,11 +326,20 @@
     }
 
     .era-english {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(14px, 1.8vw, 20px);
-      font-style: italic;
-      color: rgba(245,237,216,0.55);
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(13px, 1.6vw, 18px);
+      font-style: normal;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: rgba(245,237,216,0.5);
       margin-bottom: 28px;
+    }
+
+    .era-year {
+      font-size: 0.65em;
+      font-weight: 400;
+      opacity: 0.55;
+      letter-spacing: 0.02em;
     }
 
     .era-rule {
@@ -468,16 +556,15 @@
        RESPONSIVE
     ═══════════════════════════════════════════ */
     @media (max-width: 900px) {
-      .tl-nav-connector { width: 18px; }
-      .tl-header { padding: 14px 20px 10px; }
+      .tl-header { padding: 12px 20px 10px; }
+      .tl-slider { top: 44px; padding: 0 20px; }
       .tl-footer { padding: 10px 20px 16px; }
-      .era-content { padding: 82px 0 60px; }
+      .era-content { padding: 130px 0 60px; }
     }
 
     @media (max-width: 640px) {
       .tl-brand { display: none; }
-      .tl-nav-label { display: none; }
-      .tl-nav-connector { width: 10px; }
+      .tl-seg-tip { display: none; }
       .era-events { grid-template-columns: 1fr 1fr; }
       .future-paths { grid-template-columns: 1fr; }
       .tl-hint { display: none; }
@@ -485,6 +572,7 @@
 
     @media (max-width: 420px) {
       .era-events { grid-template-columns: 1fr; }
+      .tl-seg-year { font-size: 7px; }
     }
   </style>
 </head>
@@ -496,11 +584,19 @@
 <!-- Header -->
 <header class="tl-header">
   <div class="tl-brand">Craffft · Fibre</div>
-
-  <nav class="tl-nav" id="tlNav" aria-label="Timeline navigation">
-    <!-- inserted by JS -->
-  </nav>
+  <div class="tl-era-title" id="tlEraTitle"></div>
 </header>
+
+<!-- Timeline slider -->
+<div class="tl-slider" id="tlSlider">
+  <div class="tl-slider-inner">
+    <div class="tl-segs" id="tlSegs">
+      <!-- segments inserted by JS -->
+    </div>
+    <!-- Today marker inserted by JS -->
+  </div>
+  <div class="tl-slider-rule"></div>
+</div>
 
 <!-- Scroll track -->
 <div class="tl-scroll" id="tlScroll">
@@ -524,9 +620,8 @@
     </svg>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">c. 1350 – 1769</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Te Ao Tawhito</h2>
-      <p class="era-english tl-anim tl-anim-d3">The Ancient World</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">The Ancient World <span class="era-year">(c.1350)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Te Ao Tawhito</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -567,9 +662,8 @@
     <div class="era-num">2</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">1769 – 1840</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Tūtakitanga</h2>
-      <p class="era-english tl-anim tl-anim-d3">First Contact</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">First Contact <span class="era-year">(1769)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Tūtakitanga</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -609,9 +703,8 @@
     <div class="era-num">3</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">1840 – 1920</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Te Hītori Ūpoko</h2>
-      <p class="era-english tl-anim tl-anim-d3">Peak Industry</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">Peak Industry <span class="era-year">(1840)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Te Hītori Ūpoko</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -652,9 +745,8 @@
     <div class="era-num">4</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">1920 – 1980</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Hinga</h2>
-      <p class="era-english tl-anim tl-anim-d3">The Fall</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">The Fall <span class="era-year">(1920)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Hinga</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -695,9 +787,8 @@
     <div class="era-num">5</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">1980 – 2010</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Ara Hou</h2>
-      <p class="era-english tl-anim tl-anim-d3">New Pathway</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">New Pathway <span class="era-year">(1980)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ara Hou</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -737,9 +828,8 @@
     <div class="era-num">6</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">2010 – 2024</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Hihiri</h2>
-      <p class="era-english tl-anim tl-anim-d3">The Renaissance</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">The Renaissance <span class="era-year">(2010)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Hihiri</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -780,9 +870,8 @@
     <div class="era-num">7</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">2025 – 2026</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Ao Hou</h2>
-      <p class="era-english tl-anim tl-anim-d3">The New World</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">The New World <span class="era-year">(2025)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ao Hou</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <div class="era-events">
@@ -823,9 +912,8 @@
     <div class="era-num">8</div>
 
     <div class="era-content">
-      <p class="era-period tl-anim tl-anim-d1">2026 → Future</p>
-      <h2 class="era-maori tl-anim tl-anim-d2">Ngā Ara</h2>
-      <p class="era-english tl-anim tl-anim-d3">The Pathways</p>
+      <h2 class="era-maori tl-anim tl-anim-d2">The Pathways <span class="era-year">(2026 →)</span></h2>
+      <p class="era-english tl-anim tl-anim-d3">Ngā Ara</p>
       <div class="era-rule tl-anim-d3"></div>
 
       <p class="future-intro tl-anim tl-anim-d4">
@@ -873,52 +961,71 @@
 <script>
   (() => {
     const ERAS = [
-      { year: 'c.1350', label: 'Ancient' },
-      { year: '1769',   label: 'Contact' },
-      { year: '1840',   label: 'Peak' },
-      { year: '1920',   label: 'Fall' },
-      { year: '1980',   label: 'Renewal' },
-      { year: '2010',   label: 'Renaissance' },
-      { year: '2025',   label: 'New World' },
-      { year: '2026+',  label: 'Pathways' },
+      { year: 'c.1350', label: 'The Ancient World',   color: '#C8A84B' },
+      { year: '1769',   label: 'First Contact',        color: '#7EC8C8' },
+      { year: '1840',   label: 'Peak Industry',        color: '#D4892A' },
+      { year: '1920',   label: 'The Fall',             color: '#8B9BAA' },
+      { year: '1980',   label: 'New Pathway',          color: '#6BAF6B' },
+      { year: '2010',   label: 'The Renaissance',      color: '#2ECC71' },
+      { year: '2025',   label: 'The New World',        color: '#00E5FF' },
+      { year: '2026 →', label: 'The Pathways',         color: '#A0FFB8' },
     ];
 
+    // "Today" sits at the start of era 8 (index 7) — May 2026
+    const TODAY_ERA_IDX = 7;
+    const DEFAULT_ERA   = 6; // land on "The New World (2025)"
+
     const scroll   = document.getElementById('tlScroll');
-    const nav      = document.getElementById('tlNav');
+    const segsEl   = document.getElementById('tlSegs');
+    const sliderEl = document.getElementById('tlSlider');
     const fill     = document.getElementById('progressFill');
     const counter  = document.getElementById('eraCounter');
+    const eraTitle = document.getElementById('tlEraTitle');
     const btnPrev  = document.getElementById('btnPrev');
     const btnNext  = document.getElementById('btnNext');
     const panels   = Array.from(document.querySelectorAll('.era'));
     const N        = panels.length;
-    let current    = 0;
+    let current    = DEFAULT_ERA;
 
-    // ── Build nav ──────────────────────────────────────────
+    // ── Build slider segments ──────────────────────────────
     ERAS.forEach((e, i) => {
-      if (i > 0) {
-        const conn = document.createElement('div');
-        conn.className = 'tl-nav-connector';
-        nav.appendChild(conn);
-      }
-      const item = document.createElement('div');
-      item.className = 'tl-nav-item' + (i === 0 ? ' active' : '');
-      item.setAttribute('aria-label', `Era ${i+1}: ${e.label}`);
-      item.innerHTML = `<div class="tl-nav-dot"></div><div class="tl-nav-label">${e.year}</div>`;
-      item.addEventListener('click', () => scrollToEra(i));
-      nav.appendChild(item);
+      const seg = document.createElement('div');
+      seg.className = 'tl-seg' + (i === DEFAULT_ERA ? ' active' : '');
+      seg.style.setProperty('--seg-col', e.color);
+      seg.setAttribute('aria-label', `Go to era: ${e.label}`);
+      seg.innerHTML = `
+        <div class="tl-seg-tip">${e.label}</div>
+        <div class="tl-seg-bar"></div>
+        <div class="tl-seg-year">${e.year}</div>`;
+      seg.addEventListener('click', () => scrollToEra(i));
+      segsEl.appendChild(seg);
     });
 
-    const navItems = Array.from(nav.querySelectorAll('.tl-nav-item'));
+    const segEls = Array.from(segsEl.querySelectorAll('.tl-seg'));
+
+    // ── Place TODAY marker ─────────────────────────────────
+    // Position it at the left edge of TODAY_ERA_IDX segment (boundary between era 7 & 8)
+    function placeTodayMarker() {
+      const existing = sliderEl.querySelector('.tl-today');
+      if (existing) existing.remove();
+
+      const inner   = sliderEl.querySelector('.tl-slider-inner');
+      const segW    = segsEl.offsetWidth / N;
+      const leftPx  = TODAY_ERA_IDX * segW;
+
+      const marker  = document.createElement('div');
+      marker.className = 'tl-today';
+      marker.style.left = leftPx + 'px';
+      marker.innerHTML  = `
+        <div class="tl-today-flag">TODAY</div>
+        <div class="tl-today-line"></div>`;
+      inner.appendChild(marker);
+    }
 
     // ── Intersection Observer — animate content in ─────────
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        } else {
-          // Remove so re-entering triggers re-animation
-          entry.target.classList.remove('in-view');
-        }
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
       });
     }, { threshold: 0.45 });
 
@@ -931,8 +1038,7 @@
       const progress   = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
       fill.style.width = progress + '%';
 
-      // Which era is most visible?
-      const idx = Math.round(scrollLeft / scroll.clientWidth);
+      const idx     = Math.round(scrollLeft / scroll.clientWidth);
       const clamped = Math.max(0, Math.min(N - 1, idx));
       if (clamped !== current) {
         current = clamped;
@@ -943,10 +1049,11 @@
     scroll.addEventListener('scroll', onScroll, { passive: true });
 
     function updateUI() {
-      navItems.forEach((item, i) => item.classList.toggle('active', i === current));
-      counter.textContent = `${current + 1} / ${N}`;
-      btnPrev.disabled = current === 0;
-      btnNext.disabled = current === N - 1;
+      segEls.forEach((s, i) => s.classList.toggle('active', i === current));
+      counter.textContent  = `${current + 1} / ${N}`;
+      eraTitle.textContent = ERAS[current].label;
+      btnPrev.disabled     = current === 0;
+      btnNext.disabled     = current === N - 1;
     }
 
     // ── Scroll to era ──────────────────────────────────────
@@ -961,14 +1068,25 @@
 
     // ── Keyboard navigation ────────────────────────────────
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { e.preventDefault(); scrollToEra(current + 1); }
-      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { e.preventDefault(); scrollToEra(current - 1); }
-      if (e.key === 'Home')  { e.preventDefault(); scrollToEra(0); }
-      if (e.key === 'End')   { e.preventDefault(); scrollToEra(N - 1); }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); scrollToEra(current + 1); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); scrollToEra(current - 1); }
+      if (e.key === 'Home') { e.preventDefault(); scrollToEra(0); }
+      if (e.key === 'End')  { e.preventDefault(); scrollToEra(N - 1); }
     });
 
-    // ── Initial state ──────────────────────────────────────
+    // ── Reposition today marker on resize ─────────────────
+    window.addEventListener('resize', placeTodayMarker);
+
+    // ── Init: jump to today, build UI ─────────────────────
     updateUI();
+    // Instant-scroll to default era (no animation on first load)
+    scroll.scrollLeft = DEFAULT_ERA * scroll.clientWidth;
+    // Place today marker after layout settles
+    requestAnimationFrame(() => {
+      placeTodayMarker();
+      // Trigger in-view for the default panel immediately
+      panels[DEFAULT_ERA].classList.add('in-view');
+    });
   })();
 </script>
 </body>
