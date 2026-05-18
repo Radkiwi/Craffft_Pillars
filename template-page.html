@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Refrigeration Revolution — Craffft Food</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #F5EDD8;
+      --gold:     #C8A84B;
+      --bg:       #08100A;
+      --bg2:      #0C160E;
+      --muted:    rgba(245,237,216,0.45);
+      --rule:     rgba(200,168,75,0.15);
+      /* Pillar accent — swap per pillar */
+      --accent:   #6DBE5B;   /* Food green  */
+      --accent2:  #34D399;   /* secondary   */
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════
+       UNIVERSAL TOPBAR (matches site pattern)
+    ══════════════════════════════════════════ */
+    .site-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 36px;
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(5,7,12,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(200,168,75,0.12);
+    }
+
+    .topbar-home {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .topbar-home:hover { opacity: 1; }
+
+    .topbar-nav { display: flex; gap: 22px; }
+    .topbar-nav a {
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(245,237,216,0.38);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .topbar-nav a:hover { color: var(--gold); }
+    .topbar-nav a.topbar-active { color: rgba(245,237,216,0.82); }
+
+    /* ══════════════════════════════════════════
+       BREADCRUMB
+    ══════════════════════════════════════════ */
+    .breadcrumb {
+      position: fixed;
+      top: 36px; left: 0; right: 0;
+      height: 34px;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      padding: 0 40px;
+      gap: 8px;
+      background: rgba(8,16,10,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .bc-item {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .bc-item:hover { color: var(--cream); }
+    .bc-sep {
+      font-size: 9px;
+      color: rgba(245,237,216,0.2);
+    }
+    .bc-current {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 140px 40px 80px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 55%, rgba(109,190,91,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, rgba(52,211,153,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(0,0,0,0.4) 0%, transparent 60%);
+    }
+
+    /* decorative large year watermark */
+    .hero-year-bg {
+      position: absolute;
+      right: -2%;
+      bottom: -4%;
+      font-family: 'Playfair Display', serif;
+      font-size: min(28vw, 340px);
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.04;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 10;
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: rgba(109,190,91,0.06);
+    }
+
+    .badge-era {
+      border-color: rgba(200,168,75,0.4);
+      color: var(--gold);
+      background: rgba(200,168,75,0.05);
+    }
+
+    .badge-type {
+      border-color: rgba(245,237,216,0.15);
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .hero-hook {
+      font-size: clamp(13px, 1.5vw, 16px);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(38px, 5.5vw, 74px);
+      font-weight: 700;
+      line-height: 1.04;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+
+    .hero-title span { color: var(--accent); }
+
+    .hero-question {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(17px, 2.2vw, 24px);
+      font-weight: 400;
+      line-height: 1.5;
+      color: rgba(245,237,216,0.65);
+      margin-bottom: 36px;
+      max-width: 580px;
+    }
+
+    .hero-lead {
+      font-size: clamp(14px, 1.5vw, 16px);
+      font-weight: 300;
+      line-height: 1.85;
+      color: rgba(245,237,216,0.62);
+      max-width: 560px;
+    }
+
+    /* Hero aside — quick stats */
+    .hero-aside {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 32px 28px;
+    }
+
+    .aside-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .aside-stat {
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 14px 0;
+    }
+    .aside-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .aside-stat:first-of-type { padding-top: 0; }
+
+    .aside-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .aside-stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ══════════════════════════════════════════
+       MINI TIMELINE RIBBON
+    ══════════════════════════════════════════ */
+    .timeline-ribbon {
+      background: var(--bg2);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 28px 40px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .timeline-ribbon::-webkit-scrollbar { display: none; }
+
+    .ribbon-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .ribbon-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .ribbon-track {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      min-width: 600px;
+    }
+
+    .ribbon-seg {
+      flex: 1;
+      cursor: default;
+      position: relative;
+      padding-bottom: 16px;
+      min-width: 60px;
+    }
+
+    .ribbon-seg-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--seg-col, rgba(245,237,216,0.1));
+      opacity: 0.22;
+    }
+
+    .ribbon-seg.active .ribbon-seg-bar {
+      opacity: 1;
+      height: 6px;
+      background: var(--accent);
+    }
+
+    .ribbon-seg-year {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      font-size: 7.5px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: rgba(245,237,216,0.25);
+      white-space: nowrap;
+    }
+
+    .ribbon-seg.active .ribbon-seg-year {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .ribbon-seg-name {
+      font-size: 8px;
+      font-weight: 500;
+      color: rgba(245,237,216,0.22);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ribbon-seg.active .ribbon-seg-name {
+      color: var(--cream);
+    }
+
+    /* ══════════════════════════════════════════
+       SECTION SCAFFOLD
+    ══════════════════════════════════════════ */
+    section { padding: 80px 40px; }
+    section:nth-child(odd) { background: var(--bg2); }
+
+    .section-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .section-kicker {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 3.8vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      font-size: clamp(13px, 1.4vw, 16px);
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 40px;
+      letter-spacing: 0.04em;
+    }
+
+    .section-rule {
+      width: 48px;
+      height: 2px;
+      background: var(--accent);
+      margin-bottom: 40px;
+    }
+
+    .section-body {
+      font-size: clamp(14px, 1.5vw, 16.5px);
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(245,237,216,0.68);
+      max-width: 740px;
+    }
+
+    .section-body p + p { margin-top: 20px; }
+
+    .section-body strong { color: var(--cream); font-weight: 500; }
+
+    /* ══════════════════════════════════════════
+       HOW & WHY — two-column layout
+    ══════════════════════════════════════════ */
+    .how-why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 44px;
+    }
+
+    .hw-card {
+      padding: 28px 30px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .hw-head {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .hw-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .hw-body {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(245,237,216,0.62);
+    }
+
+    /* ══════════════════════════════════════════
+       KEY FACTS
+    ══════════════════════════════════════════ */
+    .facts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 44px;
+    }
+
+    .fact-card {
+      padding: 28px 24px;
+      border-radius: 10px;
+      background: rgba(109,190,91,0.05);
+      border: 1px solid rgba(109,190,91,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fact-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .fact-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .fact-unit {
+      font-size: 0.5em;
+      font-weight: 400;
+      opacity: 0.7;
+    }
+
+    .fact-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .fact-desc {
+      font-size: 11.5px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════
+       REAL LIFE PRACTICE
+    ══════════════════════════════════════════ */
+    .practice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 44px;
+    }
+
+    .practice-card {
+      padding: 26px 28px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.025);
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .practice-card:hover {
+      border-color: rgba(109,190,91,0.35);
+      background: rgba(109,190,91,0.04);
+    }
+
+    .practice-icon {
+      font-size: 26px;
+      margin-bottom: 14px;
+    }
+
+    .practice-type {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .practice-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .practice-body {
+      font-size: 12.5px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════
+       CURRICULUM ALIGNMENT
+    ══════════════════════════════════════════ */
+    .curriculum-wrap {
+      margin-top: 44px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .curriculum-sidebar {
+      padding: 28px 26px;
+      border-radius: 10px;
+      border: 1px solid rgba(200,168,75,0.2);
+      background: rgba(200,168,75,0.04);
+    }
+
+    .cs-head {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .cs-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cs-strand {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .cs-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .cs-strand-text {
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.55;
+      color: rgba(245,237,216,0.65);
+    }
+
+    .curriculum-ukd {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .ukd-col {
+      padding: 26px 22px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .ukd-col:first-child { background: rgba(236,72,153,0.07); }
+    .ukd-col:nth-child(2){ background: rgba(236,72,153,0.04); }
+
+    .ukd-head {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #EC4899;
+      margin-bottom: 8px;
+    }
+
+    .ukd-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 14px;
+    }
+
+    .ukd-item {
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245,237,216,0.58);
+      margin-bottom: 8px;
+      padding-left: 12px;
+      border-left: 2px solid rgba(236,72,153,0.25);
+    }
+
+    /* ══════════════════════════════════════════
+       PILLAR + TIMELINE LOCATOR
+    ══════════════════════════════════════════ */
+    .locator-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 24px;
+      margin-top: 44px;
+      align-items: start;
+    }
+
+    .pillar-badge-large {
+      padding: 32px 24px;
+      border-radius: 12px;
+      background: rgba(109,190,91,0.06);
+      border: 1px solid rgba(109,190,91,0.2);
+      text-align: center;
+    }
+
+    .pbl-icon { font-size: 40px; margin-bottom: 14px; }
+
+    .pbl-pillar {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .pbl-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 14px;
+    }
+
+    .pbl-year {
+      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .pbl-year-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .context-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ctx-card {
+      padding: 20px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .ctx-role {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .ctx-role.before { color: rgba(245,237,216,0.3); }
+    .ctx-role.current { color: var(--accent); }
+    .ctx-role.after { color: var(--gold); }
+
+    .ctx-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .ctx-desc {
+      font-size: 11.5px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .ctx-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .ctx-link:hover { opacity: 1; }
+
+    /* ══════════════════════════════════════════
+       MINECRAFT / GAME WORLD CTA
+    ══════════════════════════════════════════ */
+    .minecraft-block {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(109,190,91,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 50%, rgba(52,211,153,0.07) 0%, transparent 50%);
+      border: 1px solid rgba(109,190,91,0.18);
+      border-radius: 14px;
+      padding: 52px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+      margin-top: 44px;
+    }
+
+    .mc-kicker {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .mc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .mc-body {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(245,237,216,0.62);
+      max-width: 520px;
+    }
+
+    .mc-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 30px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #07120A;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .mc-btn:hover { opacity: 0.88; transform: translateY(-2px); }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    .site-footer {
+      padding: 40px;
+      border-top: 1px solid rgba(200,168,75,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+    }
+
+    .footer-brand {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.65;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════════
+       SCROLL ANIMATIONS
+    ══════════════════════════════════════════ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .site-topbar { padding: 0 20px; }
+      .breadcrumb  { padding: 0 20px; }
+      .hero        { padding: 130px 24px 64px; }
+      .hero-inner  { grid-template-columns: 1fr; gap: 40px; }
+      .hero-aside  { display: none; }
+      section      { padding: 60px 24px; }
+      .how-why-grid    { grid-template-columns: 1fr; }
+      .curriculum-wrap { grid-template-columns: 1fr; }
+      .curriculum-ukd  { grid-template-columns: 1fr; }
+      .locator-grid    { grid-template-columns: 1fr; }
+      .context-cards   { grid-template-columns: 1fr; }
+      .minecraft-block { grid-template-columns: 1fr; padding: 36px 28px; }
+      .site-footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-nav { gap: 12px; }
+      .topbar-nav a { font-size: 8px; letter-spacing: 0.06em; }
+      .facts-grid     { grid-template-columns: 1fr 1fr; }
+      .practice-grid  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════════ -->
+<div class="site-topbar">
+  <a class="topbar-home" href="/">← Craffft</a>
+  <nav class="topbar-nav">
+    <a href="fibre-timeline.html">Fibre</a>
+    <a href="food-timeline.html" class="topbar-active">Food</a>
+    <a href="Factory-timeline.html">Factory</a>
+    <a href="transport-timeline.html">Transport</a>
+  </nav>
+</div>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a class="bc-item" href="/">Learning Hub</a>
+  <span class="bc-sep">›</span>
+  <a class="bc-item" href="food-timeline.html">Food</a>
+  <span class="bc-sep">›</span>
+  <a class="bc-item" href="food-timeline.html">Era 3 — The Refrigeration Revolution</a>
+  <span class="bc-sep">›</span>
+  <span class="bc-current">The Refrigeration Revolution</span>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-year-bg">1882</div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badges">
+        <span class="badge">🌱 Food Pillar</span>
+        <span class="badge badge-era">Era 3 · 1882</span>
+        <span class="badge badge-type">Industrial Revolution</span>
+      </div>
+
+      <p class="hero-hook">A single ship changed everything</p>
+      <h1 class="hero-title">The <span>Refrigeration</span><br>Revolution</h1>
+      <p class="hero-question">What if the ability to keep food cold was the most consequential technology New Zealand ever adopted?</p>
+
+      <p class="hero-lead">
+        On 15 February 1882, the SS Dunedin sailed from Port Chalmers with 4,331 mutton carcasses chilled to near-freezing. Ninety-eight days later it docked in London — and New Zealand's entire economic future changed overnight. A small, remote island nation had just discovered it could feed the world, if it could keep things cold enough.
+      </p>
+    </div>
+
+    <aside class="hero-aside">
+      <div class="aside-label">At a Glance</div>
+      <div class="aside-stat">
+        <div class="aside-stat-num">98<span class="aside-stat-unit" style="font-size:16px; opacity:0.6"> days</span></div>
+        <div class="aside-stat-label">First voyage of the SS Dunedin, Port Chalmers → London, 1882</div>
+      </div>
+      <div class="aside-stat">
+        <div class="aside-stat-num">4,331</div>
+        <div class="aside-stat-label">Mutton carcasses in the first refrigerated cargo — all arrived in perfect condition</div>
+      </div>
+      <div class="aside-stat">
+        <div class="aside-stat-num">£0.05</div>
+        <div class="aside-stat-label">Price per pound of NZ lamb in London — competitive with locally produced British lamb for the first time</div>
+      </div>
+      <div class="aside-stat">
+        <div class="aside-stat-num">40×</div>
+        <div class="aside-stat-label">Growth in NZ refrigerated export volumes within 20 years of the first voyage</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     MINI TIMELINE RIBBON
+══════════════════════════════════════════ -->
+<div class="timeline-ribbon">
+  <div class="ribbon-inner">
+    <div class="ribbon-label">Food Pillar — Position in Time</div>
+    <div class="ribbon-track" id="ribbon"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     HOW & WHY
+══════════════════════════════════════════ -->
+<section>
+  <div class="section-inner">
+    <p class="section-kicker">The Story Behind It</p>
+    <h2 class="section-title">How & Why This Happened</h2>
+    <p class="section-sub">He aha i pēnei ai — understanding the forces that made it possible</p>
+    <div class="section-rule"></div>
+
+    <div class="section-body">
+      <p>
+        By the 1870s, New Zealand had a problem. The country had millions of sheep, vast tracts of fertile grassland, and a small domestic population that could not possibly consume all the meat being produced. Britain, meanwhile, had a rapidly growing urban working class that was chronically underfed. The gap between supply and demand was obvious — but a 20,000-kilometre ocean stood between them.
+      </p>
+      <p>
+        The breakthrough came from an unlikely source: James Harrison, an Australian engineer, had been experimenting with mechanical refrigeration since the 1850s. His work was adapted by engineer Thomas Mort and, critically, by the Bell-Coleman compression system that was installed aboard the SS Dunedin in 1881. The ship was fitted with a 25-horsepower refrigeration plant capable of holding its cargo hold at near-freezing temperatures for the duration of the voyage.
+      </p>
+      <p>
+        The timing aligned with a second force: the <strong>Long Depression</strong> of the 1880s had driven wool prices down, making sheep farming alone unviable. Farmers desperately needed a new revenue stream. Refrigeration technology arrived precisely when the economic pressure was highest — and the uptake was explosive.
+      </p>
+    </div>
+
+    <div class="how-why-grid fade-up" style="margin-top: 40px;">
+      <div class="hw-card">
+        <div class="hw-head">The Problem</div>
+        <div class="hw-title">Distance + Perishability</div>
+        <div class="hw-body">New Zealand's isolation had always been both its strength (predator-free ecosystems) and its weakness (distance from markets). For food systems, perishability was the fundamental constraint. You could grow the best lamb in the world — but if it rotted at sea, it was worthless.</div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-head">The Catalyst</div>
+        <div class="hw-title">The Bell-Coleman Machine</div>
+        <div class="hw-body">The Bell-Coleman compression refrigeration system compressed air, cooled it, and circulated it through the hold. Unlike ice (which melted), it maintained consistent sub-zero temperatures for months. At 25 horsepower it was modest — but enough to change the world.</div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-head">The Enabler</div>
+        <div class="hw-title">Economic Desperation</div>
+        <div class="hw-body">The Long Depression made farmers willing to try anything. When the first SS Dunedin cargo returned a profit, every sheep station owner in Otago took notice. Within five years, refrigerated shipping was the default for NZ meat exports.</div>
+      </div>
+      <div class="hw-card">
+        <div class="hw-head">The Consequence</div>
+        <div class="hw-title">A Nation Shaped by Cold</div>
+        <div class="hw-body">Refrigeration didn't just change what New Zealand exported — it changed who New Zealand was. The entire country reorganised around producing food for distant markets. The "dairy factory" and "freezing works" became the backbone of provincial New Zealand for the next 100 years.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     KEY FACTS
+══════════════════════════════════════════ -->
+<section>
+  <div class="section-inner">
+    <p class="section-kicker">Key Facts</p>
+    <h2 class="section-title">Numbers That Tell the Story</h2>
+    <p class="section-sub">The data behind the refrigeration transformation</p>
+    <div class="section-rule"></div>
+
+    <div class="facts-grid">
+      <div class="fact-card fade-up">
+        <div class="fact-num">1882</div>
+        <div class="fact-label">Year of the first successful refrigerated voyage</div>
+        <div class="fact-desc">The SS Dunedin sailed from Port Chalmers, making New Zealand one of the world's first countries to export chilled meat at scale.</div>
+      </div>
+      <div class="fact-card fade-up">
+        <div class="fact-num">25<span class="fact-unit">hp</span></div>
+        <div class="fact-label">Power of the Bell-Coleman refrigeration plant</div>
+        <div class="fact-desc">Less than a modern family car engine — yet sufficient to keep an entire ship's hold near-frozen for three months.</div>
+      </div>
+      <div class="fact-card fade-up">
+        <div class="fact-num">40×</div>
+        <div class="fact-label">Growth in refrigerated export volume, 1882–1900</div>
+        <div class="fact-desc">Within 20 years, refrigerated exports grew 40-fold. By 1900, NZ was supplying a significant portion of Britain's imported meat.</div>
+      </div>
+      <div class="fact-card fade-up">
+        <div class="fact-num">100<span class="fact-unit">+</span></div>
+        <div class="fact-label">Freezing works built in NZ by 1920</div>
+        <div class="fact-desc">The freezing works became the largest employers in most provincial towns — refrigeration infrastructure shaped the geography of New Zealand's regions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     REAL LIFE PRACTICE
+══════════════════════════════════════════ -->
+<section>
+  <div class="section-inner">
+    <p class="section-kicker">Practice in Real Life</p>
+    <h2 class="section-title">See It, Try It, Build It</h2>
+    <p class="section-sub">How you can connect with the refrigeration story today</p>
+    <div class="section-rule"></div>
+
+    <div class="practice-grid">
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">🏭</div>
+        <div class="practice-type">Visit</div>
+        <div class="practice-title">Explore a Historic Freezing Works</div>
+        <div class="practice-body">The Waingawa and Tomoana freezing works sites in Hawke's Bay offer insight into what these industrial food complexes looked like at scale. Many have heritage trails. Ask your local council what once stood in your town.</div>
+      </div>
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">🌡️</div>
+        <div class="practice-type">Experiment</div>
+        <div class="practice-title">Map the Cold Chain</div>
+        <div class="practice-body">Trace the journey of a product in your supermarket — from farm to shelf. How many refrigerated stages does it pass through? Calculate the energy cost. How does that compare to eating locally and seasonally? Build a cold chain diagram.</div>
+      </div>
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">📦</div>
+        <div class="practice-type">Design</div>
+        <div class="practice-title">The Packaging Challenge</div>
+        <div class="practice-body">Design a system to keep food fresh without electricity. What materials would you use? How long can you keep food cold using only ice, insulation, and airflow? Test your design over 24 hours — this is the same challenge engineers faced in 1880.</div>
+      </div>
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">🚢</div>
+        <div class="practice-type">Research</div>
+        <div class="practice-title">The Port Chalmers Connection</div>
+        <div class="practice-body">Visit or virtually explore Port Chalmers, Dunedin. The heritage precinct still shows the port infrastructure that made the first refrigerated voyage possible. The SS Dunedin's story is documented at the Otago Museum — trace the original cargo manifest.</div>
+      </div>
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">🌱</div>
+        <div class="practice-type">Debate</div>
+        <div class="practice-title">Was Refrigeration Good for Aotearoa?</div>
+        <div class="practice-body">Hold a class debate. Refrigeration created wealth — but it also accelerated monoculture farming, drove conversion of native bush, and locked NZ into a century of commodity dependence. Who won, and who didn't? Use the timeline as your evidence base.</div>
+      </div>
+
+      <div class="practice-card fade-up">
+        <div class="practice-icon">🎮</div>
+        <div class="practice-type">Game World</div>
+        <div class="practice-title">Craffft: Cold Chain Quest</div>
+        <div class="practice-body">In the Craffft Minecraft world, build your own 1882-era freezing works, complete the cargo loading challenge, and race to get your meat to London before it spoils. Unlock the refrigeration achievement to progress to the modern cold chain era.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     CURRICULUM ALIGNMENT
+══════════════════════════════════════════ -->
+<section>
+  <div class="section-inner">
+    <p class="section-kicker">Te Mātaiaho — Curriculum Alignment</p>
+    <h2 class="section-title">What This Teaches</h2>
+    <p class="section-sub">How the refrigeration story maps to New Zealand Curriculum objectives</p>
+    <div class="section-rule"></div>
+
+    <div class="curriculum-wrap">
+      <div class="curriculum-sidebar fade-up">
+        <div class="cs-head">Aligned Strands</div>
+        <div class="cs-title">Te Mātaiaho</div>
+        <div class="cs-strand">
+          <div class="cs-dot"></div>
+          <div class="cs-strand-text"><strong style="color:var(--cream)">Aotearoa NZ Histories</strong> — Continuity and Change; Economic and social shifts of Aotearoa</div>
+        </div>
+        <div class="cs-strand">
+          <div class="cs-dot"></div>
+          <div class="cs-strand-text"><strong style="color:var(--cream)">English / Literacy</strong> — Persuasive writing; Critical reading of historical sources</div>
+        </div>
+        <div class="cs-strand">
+          <div class="cs-dot"></div>
+          <div class="cs-strand-text"><strong style="color:var(--cream)">Science</strong> — Physical world: heat transfer, thermodynamics, compression cycles</div>
+        </div>
+        <div class="cs-strand">
+          <div class="cs-dot"></div>
+          <div class="cs-strand-text"><strong style="color:var(--cream)">Technology</strong> — Technological systems; the relationship between technological change and society</div>
+        </div>
+        <div class="cs-strand">
+          <div class="cs-dot"></div>
+          <div class="cs-strand-text"><strong style="color:var(--cream)">Social Sciences</strong> — How economic decisions affect people, places, and environments</div>
+        </div>
+      </div>
+
+      <div class="curriculum-ukd fade-up">
+        <div class="ukd-col">
+          <div class="ukd-head">Understand</div>
+          <div class="ukd-title">Concepts</div>
+          <div class="ukd-item">How a single technology can restructure an entire national economy</div>
+          <div class="ukd-item">The relationship between geography, distance, and food systems</div>
+          <div class="ukd-item">Why economic pressure accelerates technological adoption</div>
+          <div class="ukd-item">How industrial food systems create path dependencies that last generations</div>
+        </div>
+        <div class="ukd-col">
+          <div class="ukd-head">Know</div>
+          <div class="ukd-title">Knowledge</div>
+          <div class="ukd-item">The SS Dunedin voyage: 1882, Port Chalmers to London, 98 days</div>
+          <div class="ukd-item">The Bell-Coleman compression refrigeration system and how it works</div>
+          <div class="ukd-item">The Long Depression and its role in forcing agricultural innovation</div>
+          <div class="ukd-item">Vocabulary: cold chain, compression refrigeration, freezing works, monoculture</div>
+        </div>
+        <div class="ukd-col">
+          <div class="ukd-head">Do</div>
+          <div class="ukd-title">Skills</div>
+          <div class="ukd-item">Map a modern cold chain from farm to supermarket shelf</div>
+          <div class="ukd-item">Write a persuasive argument for or against NZ's commodity export dependence</div>
+          <div class="ukd-item">Design an insulation experiment testing heat retention without electricity</div>
+          <div class="ukd-item">Construct a historical narrative: "How refrigeration shaped where New Zealanders live today"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     PILLAR + TIMELINE LOCATOR
+══════════════════════════════════════════ -->
+<section>
+  <div class="section-inner">
+    <p class="section-kicker">Where This Fits</p>
+    <h2 class="section-title">Pillar & Timeline Location</h2>
+    <p class="section-sub">The Refrigeration Revolution in the context of Aotearoa's food story</p>
+    <div class="section-rule"></div>
+
+    <div class="locator-grid fade-up">
+      <div class="pillar-badge-large">
+        <div class="pbl-icon">🌱</div>
+        <div class="pbl-pillar">Craffft Pillar</div>
+        <div class="pbl-name">Food</div>
+        <div style="height:1px; background: rgba(109,190,91,0.2); margin: 16px 0;"></div>
+        <div class="pbl-year">1882</div>
+        <div class="pbl-year-label">Era 3 of 8</div>
+        <div style="height:1px; background: rgba(109,190,91,0.2); margin: 16px 0;"></div>
+        <div style="font-size:11px; color:var(--muted); font-weight:300; line-height:1.5;">The Refrigeration Revolution marks the pivot from domestic subsistence to global commodity export.</div>
+      </div>
+
+      <div class="context-cards">
+        <div class="ctx-card">
+          <div class="ctx-role before">← Before</div>
+          <div class="ctx-title">The Age of Sail & Settlement</div>
+          <div class="ctx-desc">1769–1882. European settlers establish pastoral farming, whaling, and timber extraction. Food is largely for local consumption and ship provisioning. The domestic market is tiny.</div>
+          <a class="ctx-link" href="food-timeline.html">View Era 2 →</a>
+        </div>
+        <div class="ctx-card" style="border-color: rgba(109,190,91,0.2); background: rgba(109,190,91,0.04);">
+          <div class="ctx-role current">● Now</div>
+          <div class="ctx-title">The Refrigeration Revolution</div>
+          <div class="ctx-desc">1882. The SS Dunedin changes everything. NZ reorganises its entire food system around the ability to export chilled meat and dairy to Britain and beyond.</div>
+          <a class="ctx-link" href="food-timeline.html">View Full Era →</a>
+        </div>
+        <div class="ctx-card">
+          <div class="ctx-role after">After →</div>
+          <div class="ctx-title">The Protected Farm</div>
+          <div class="ctx-desc">1900–1984. Import controls, subsidies, and guaranteed British markets create a comfortable but ultimately fragile commodity export economy. The seeds of Rogernomics are sown.</div>
+          <a class="ctx-link" href="food-timeline.html">View Era 4 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     MINECRAFT CTA
+══════════════════════════════════════════ -->
+<section style="background: var(--bg);">
+  <div class="section-inner">
+    <div class="minecraft-block fade-up">
+      <div>
+        <div class="mc-kicker">🎮 Craffft Game World</div>
+        <div class="mc-title">Build the SS Dunedin<br>in Minecraft</div>
+        <div class="mc-body">
+          Step into 1882 Dunedin. Your mission: retrofit the SS Dunedin with a working Bell-Coleman refrigeration system, load 4,331 mutton carcasses, and navigate to London before your cargo spoils. Every decision — from insulation materials to voyage route — affects your outcome.
+        </div>
+      </div>
+      <a class="mc-btn" href="#">
+        Enter Game World ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-brand">Craffft · craffft.earth</div>
+  <div class="footer-note">Food · Fibre · Factory · Transport</div>
+  <div class="footer-note" style="font-style:italic; color:rgba(245,237,216,0.22);">Te Mātaiaho Aligned</div>
+</footer>
+
+
+<script>
+/* ── Mini timeline ribbon ── */
+const ERAS = [
+  { year:'c.1300', name:'Te Ao Tawhito',              col:'#6DBE5B' },
+  { year:'1769',   name:'Age of Sail',                 col:'#D4A827' },
+  { year:'1882',   name:'Refrigeration Revolution',    col:'#5BC8D4' },
+  { year:'1950',   name:'The Protected Farm',          col:'#8A7A5A' },
+  { year:'1984',   name:'Rogernomics & Reform',        col:'#6B8FC7' },
+  { year:'1995',   name:'Precision Agriculture',       col:'#34C97B' },
+  { year:'2020',   name:'Regenerative Turn',           col:'#A78BFA' },
+  { year:'2026+',  name:'Ngā Ara',                    col:'#34D399' },
+];
+const ACTIVE = 2; // Era 3 (index 2) is active on this page
+
+const ribbon = document.getElementById('ribbon');
+ERAS.forEach((e, i) => {
+  const seg = document.createElement('div');
+  seg.className = 'ribbon-seg' + (i === ACTIVE ? ' active' : '');
+  seg.style.setProperty('--seg-col', e.col);
+  seg.innerHTML =
+    `<div class="ribbon-seg-name">${e.name}</div>` +
+    `<div class="ribbon-seg-bar"></div>` +
+    `<div class="ribbon-seg-year">${e.year}</div>`;
+  ribbon.appendChild(seg);
+});
+
+/* ── Scroll fade-up animations ── */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach((el, i) => {
+  el.style.transitionDelay = (i % 4) * 0.08 + 's';
+  io.observe(el);
+});
+</script>
+</body>
+</html>
